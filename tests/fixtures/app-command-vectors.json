@@ -1,0 +1,110 @@
+[
+  {
+    "action": "status",
+    "value": null,
+    "sequence": 0,
+    "hex": "aa4103000000e8"
+  },
+  {
+    "action": "power",
+    "value": false,
+    "sequence": 4,
+    "hex": "aa010804000100a6"
+  },
+  {
+    "action": "power",
+    "value": true,
+    "sequence": 5,
+    "hex": "aa010805000101a6"
+  },
+  {
+    "action": "upper",
+    "value": 99,
+    "sequence": 6,
+    "hex": "aa030206000163cf"
+  },
+  {
+    "action": "upper",
+    "value": 93,
+    "sequence": 7,
+    "hex": "aa03020700015df0"
+  },
+  {
+    "action": "upper",
+    "value": 85,
+    "sequence": 8,
+    "hex": "aa030208000155f7"
+  },
+  {
+    "action": "lower",
+    "value": 12,
+    "sequence": 72,
+    "hex": "aa03044800010ce8"
+  },
+  {
+    "action": "lower",
+    "value": 13,
+    "sequence": 73,
+    "hex": "aa03044900010de8"
+  },
+  {
+    "action": "lower",
+    "value": 14,
+    "sequence": 74,
+    "hex": "aa03044a00010ee8"
+  },
+  {
+    "action": "upper_on",
+    "value": false,
+    "sequence": 4,
+    "hex": "aa030104000100ad"
+  },
+  {
+    "action": "upper_on",
+    "value": true,
+    "sequence": 5,
+    "hex": "aa030105000101ad"
+  },
+  {
+    "action": "lower_on",
+    "value": false,
+    "sequence": 8,
+    "hex": "aa030308000100a3"
+  },
+  {
+    "action": "lower_on",
+    "value": true,
+    "sequence": 9,
+    "hex": "aa030309000101a3"
+  },
+  {
+    "action": "temperature",
+    "value": 4728,
+    "sequence": 10,
+    "hex": "aa03050a00021278ce"
+  },
+  {
+    "action": "temperature",
+    "value": 3025,
+    "sequence": 11,
+    "hex": "aa03050b00020bd17f"
+  },
+  {
+    "action": "temperature",
+    "value": 2900,
+    "sequence": 12,
+    "hex": "aa03050c00020b54fd"
+  },
+  {
+    "action": "auto_brightness",
+    "value": true,
+    "sequence": 123,
+    "hex": "aa030c7b000101de"
+  },
+  {
+    "action": "auto_brightness",
+    "value": false,
+    "sequence": 124,
+    "hex": "aa030c7c000100d8"
+  }
+]
