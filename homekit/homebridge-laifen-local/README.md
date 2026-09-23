@@ -7,5 +7,7 @@ with `python3 laifen.py setup --mode existing` from the full project first.
 It generates the device configuration and private companion paths; installing
 this plugin tarball alone does not install the Python runtime.
 
-Full installation, compatibility limits, protocol notes and MIT license:
+Full installation, compatibility limits, protocol notes and PolyForm Noncommercial 1.0.0 license:
 https://github.com/BodenQ/laifen-homekit
+
+Noncommercial use only under LICENSE. Keep the Required Notice attribution to BodenQ and the project URL when redistributing, including modified copies. v1.0.0 was MIT; its existing grants remain unaffected.

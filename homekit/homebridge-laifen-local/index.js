@@ -114,7 +114,7 @@ class LaifenPlatform {
     else this.api.updatePlatformAccessories([accessory]);
     if (!masterExists) this.api.registerPlatformAccessories(PLUGIN,PLATFORM,[masterAccessory]);
     if (!autoExists) this.api.registerPlatformAccessories(PLUGIN,PLATFORM,[autoAccessory]);
-    this.log.info('版本 1.0.0；独立台灯总开关控制两路。自动亮度：两路全开恢复、单路关闭暂停、手调退出。共用色温与Apple自适应照明入口在下灯。');
+    this.log.info('版本 1.1.0；独立台灯总开关控制两路。自动亮度：两路全开恢复、单路关闭暂停、手调退出。共用色温与Apple自适应照明入口在下灯。');
   }
   disableAdaptive(reason) {
     if(this.adaptiveController?.isAdaptiveLightingActive()) {
