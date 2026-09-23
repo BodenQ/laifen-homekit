@@ -2,7 +2,7 @@
 
 让电脑通过蓝牙控制徕芬大路灯，在 Apple「家庭」中使用开关、亮度、色温和自适应照明。**本地运行，不需要 Codex、厂商云账号或一直打开徕芬 App。** 非官方项目。
 
-目前仅实测一台 **LFFL01-P + Mac**。其他同型号固件需验证；Linux 为实验性支持，Windows 暂不支持。[兼容性详情](docs/compatibility.md)
+目前实测的商品型号为 **徕芬 L1 Pro**，蓝牙设备名形如 `LFFL01-P-XXXX`。仅验证了一台 **L1 Pro + Mac**。其他同型号固件需验证；Linux 为实验性支持，Windows 暂不支持。[兼容性详情](docs/compatibility.md)
 
 ## 你需要准备
 
@@ -85,4 +85,4 @@ python3 laifen.py setup --mode existing
 
 **v1.1.0 起采用 [PolyForm Noncommercial 1.0.0](LICENSE)：允许非商业使用、修改和分享，禁止商业用途；分享原版或修改版时必须保留 BodenQ 的署名、项目链接及许可。** 非商业用途的具体定义以许可原文为准。
 
-这是「源码可用、非商业许可」项目，不属于 OSI 定义的开源。v1.0.0 曾以 MIT 发布，该旧版已经授予的权利不因换证而收回；第三方依赖保留各自许可。[中文许可说明](docs/license.md)
+这是「源码可用、非商业许可」项目，不属于 OSI 定义的开源。第三方依赖保留各自许可。[中文许可说明](docs/license.md)
