@@ -1,0 +1,17 @@
+.venv*/
+node_modules/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env*
+storage/
+logs/
+runtime/
+*.pklg
+*.pcap*
+*.jsonl
+*.preferences.json
+device.json
+config.json
+dist/
+*.egg-info/
