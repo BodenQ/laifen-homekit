@@ -1,6 +1,6 @@
 # Agent project brief
 
-Local BLE → Homebridge → Apple Home/Siri for the observed Laifen **LFFL01-P** protocol. Read `README.md` for the user workflow; use linked docs only when needed. No Codex runtime or vendor cloud dependency.
+Local BLE → Homebridge → Apple Home/Siri for the observed Laifen **LFFL01-P** protocol. Read `README.md` for the user workflow; use linked docs only when needed. No Codex runtime or vendor cloud dependency for routine control.
 
 ## Map
 
@@ -28,6 +28,12 @@ Local BLE → Homebridge → Apple Home/Siri for the observed Laifen **LFFL01-P*
 - One BLE owner per lamp. Do not stop a user's bridge or send physical-control commands merely to run offline tests. Request observation when real-hardware testing is authorized and needed.
 - Runtime is separate from source: macOS `~/Library/Application Support/LaifenHomeKitBridge`, Linux `~/.local/share/laifen-homekit`. Preserve pairing/storage/preferences. Never commit runtime data, real identifiers, PINs, raw captures or personal logs.
 - Existing mode installs a Python companion and plugin, backs up/merges config, preserves bridge identity/other accessories; never launches a second bridge. Restart through the existing manager.
+
+## First-use troubleshooting
+
+The tested lamp is a **Laifen L1 Pro** (broadcast family `LFFL01-P-XXXX`) previously used with the vendor App. Direct control with the App closed is verified; out-of-box use without prior initialization/pairing is not. Do not claim that initialization, bonding or link encryption is absent.
+
+Try the terminal wizard directly first. If discovery, connection or status precheck fails, check power, distance, permissions and competing BLE owners. If unresolved, guide the user to pause this lamp's bridge/debug process, personally log into the official Laifen App, follow its add/connect flow and verify physical power control. Never request passwords or verification codes. Then have the user fully quit the App and retry the wizard. This is an optional diagnostic fallback, not a proven prerequisite or guaranteed fix. If it still fails, collect sanitized errors; do not guess writes or repeatedly factory-reset the lamp. Keep vendor initialization distinct from Apple Home bridge pairing.
 
 ## Validation and packaging
 
