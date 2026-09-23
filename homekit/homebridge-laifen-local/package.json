@@ -1,0 +1,22 @@
+{
+  "name": "homebridge-laifen-local",
+  "version": "1.0.0",
+  "description": "Local BLE HomeKit bridge for observed Laifen LFFL01-P lamps",
+  "main": "index.js",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": "^22.0.0 || ^24.0.0 || ^26.0.0",
+    "homebridge": "^2.4.0"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "config.schema.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BodenQ/laifen-homekit.git"
+  }
+}
