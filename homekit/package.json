@@ -1,0 +1,14 @@
+{
+  "name": "laifen-homekit-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "homebridge": "2.4.0"
+  },
+  "engines": {
+    "node": "^22.0.0 || ^24.0.0 || ^26.0.0"
+  },
+  "scripts": {
+    "test": "node --test plugin.test.mjs"
+  }
+}
