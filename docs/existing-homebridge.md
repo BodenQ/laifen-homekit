@@ -37,13 +37,13 @@ python3 laifen.py integrate \
 
 如果不希望工具修改既有配置，向导中跳过自动接入。运行目录会生成：
 
-- `homebridge-laifen-local-1.0.0.tgz`：可安装的 Homebridge 插件包。
+- `homebridge-laifen-local-1.1.0.tgz`：可安装的 Homebridge 插件包。
 - `platform.json`：这一台电脑、这一盏灯的实际配置片段，含 Python、worker、日志绝对路径和自动获取的灯身份。不要公开。
 
 以你的 Homebridge 运行账号，在其实际插件前缀安装：
 
 ```sh
-npm install --prefix '/实际插件前缀' '/运行目录/homebridge-laifen-local-1.0.0.tgz'
+npm install --prefix '/实际插件前缀' '/运行目录/homebridge-laifen-local-1.1.0.tgz'
 ```
 
 备份 `config.json` 后，将 `platform.json` 的对象追加到 `platforms` 数组，不要用它替换整个 config.json。若启用了插件白名单，将 `homebridge-laifen-local` 加入 `plugins`；然后重启现有 Homebridge。通常无需重新配对桥接，新配件会加入现有家庭。
