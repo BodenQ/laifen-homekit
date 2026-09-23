@@ -18,7 +18,7 @@ import subprocess
 import sys
 import time
 
-VERSION='1.0.0'
+VERSION='1.1.0'
 SOURCE=Path(__file__).resolve().parent
 LABEL='io.github.laifen-homekit'
 DEFAULT_RUNTIME=Path.home()/('Library/Application Support/LaifenHomeKitBridge'
@@ -79,7 +79,7 @@ def install(runtime,node=None,mode='standalone'):
             if (SOURCE/name).resolve()==(runtime/name).resolve():continue
             shutil.copytree(SOURCE/name,runtime/name,dirs_exist_ok=True,
                 ignore=shutil.ignore_patterns('node_modules','__pycache__','storage','logs','*.test.mjs','test_*.py'))
-        for name in ('requirements.txt','laifen.py'):
+        for name in ('requirements.txt','laifen.py','LICENSE'):
             if (SOURCE/name).resolve()!=(runtime/name).resolve():shutil.copy2(SOURCE/name,runtime/name)
         # Resolving the interpreter and using symlinks also supports uv's
         # relocatable Python; copying that executable can lose its stdlib path.
