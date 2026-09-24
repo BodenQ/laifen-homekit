@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { HomebridgeAPI } from './node_modules/homebridge/dist/api.js';
 import plugin from './homebridge-laifen-local/index.js';
 
-function fixture(device={name:'LFFL01-P-ABCD',protocolAddress:'aa:bb:cc:dd:ee:ff'}) {
+function fixture(device={name:'LFFL01-P-ABCD',protocolAddress:'aa:bb:cc:dd:ee:ff'},config={}) {
   const api=new HomebridgeAPI(); const registered=[];
   api.registerPlatformAccessories=(p,n,items)=>registered.push(...items);
   api.updatePlatformAccessories=()=>{};
   const log={info(){},warn(){},error(){}};
-  const p=new plugin.LaifenPlatform(log,{device},api);
+  const p=new plugin.LaifenPlatform(log,{device,...config},api);
   p.setup();
   return {api,p,registered};
 }
@@ -103,8 +103,8 @@ test('queued slider values coalesce without crossing power command',async()=>{
 
 const baseState={power:true,upper:100,lower:30,upper_on:true,lower_on:true,temperature:4831};
 const flush=async p=>{for(let i=0;i<100 && p.busy;i++) await new Promise(r=>setImmediate(r)); assert.equal(p.busy,false);};
-function adaptiveFixture(t) {
-  const f=fixture(); const {p,api}=f; const writes=[];
+function adaptiveFixture(t,config={}) {
+  const f=fixture(undefined,config); const {p,api}=f; const writes=[];
   p.online=true; p.update({...baseState});
   p.request=async(action,value,options)=>{
     writes.push({action,value,adaptive:options.adaptive});
@@ -164,4 +164,21 @@ test('a manual override cancels queued adaptive targets before they reach BLE',a
   release(); await Promise.all([blocked,automatic,manual]);
   assert.equal(writes.some(([a,v])=>a==='temperature'&&v===3500),false);
   assert.ok(writes.some(([a,v])=>a==='temperature'&&v===4000));
+});
+
+test('independent mode preserves true brightness, off-state caching and manual override behavior',async t=>{
+  const {p,api,registered,writes}=adaptiveFixture(t,{adaptiveLightingMode:'independent',adaptiveReferenceBrightness:70});await flush(p);
+  const lower=registered[0].getServiceById(api.hap.Service.Lightbulb,'lower');
+  assert.equal(writes[0].value,Math.round(1000000/(340-0.8*70)));
+  assert.equal(lower.getCharacteristic(api.hap.Characteristic.Brightness).value,30);
+  p.update({...p.state,lower:10});await flush(p);
+  assert.equal(writes.at(-1).value,writes[0].value);
+  assert.equal(lower.getCharacteristic(api.hap.Characteristic.Brightness).value,10);
+  p.update({...p.state,power:false,upper_on:false,lower_on:false});
+  p.update({...p.state,lower:80});await flush(p);
+  assert.equal(p.state.power,false);
+  assert.ok(writes.filter(w=>w.action==='temperature').every(w=>w.adaptive));
+  await lower.getCharacteristic(api.hap.Characteristic.ColorTemperature).handleSetRequest(250);await flush(p);
+  assert.equal(p.adaptiveController.isAdaptiveLightingActive(),false);
+  assert.equal(p.state.temperature,4000);
 });
