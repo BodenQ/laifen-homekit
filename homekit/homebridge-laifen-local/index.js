@@ -1,6 +1,7 @@
 'use strict';
 const { spawn } = require('node:child_process');
 const readline = require('node:readline');
+const {createAdaptiveController} = require('./adaptive-lighting');
 
 const PLUGIN = 'homebridge-laifen-local';
 const PLATFORM = 'LaifenLocal';
@@ -101,20 +102,21 @@ class LaifenPlatform {
     this.autoBrightnessService.getCharacteristic(C.On)
       .onGet(async()=>Boolean((await this.current()).auto_brightness_preference))
       .onSet(value=>this.set('auto_preference',Boolean(value)));
-    this.adaptiveController=new this.api.hap.AdaptiveLightingController(lower,{
-      controllerMode:this.api.hap.AdaptiveLightingControllerMode.AUTOMATIC,
-    });
+    this.adaptiveMode=this.config.adaptiveLightingMode ?? 'apple';
+    this.adaptiveReferenceBrightness=this.config.adaptiveReferenceBrightness ?? 70;
+    this.adaptiveController=createAdaptiveController(this.api.hap,lower,this.adaptiveMode,this.adaptiveReferenceBrightness);
+    this.log.info(`自适应照明模式：${this.adaptiveMode==='independent'?`色温与亮度解耦（参考${this.adaptiveReferenceBrightness}%）`:'Apple原生（依据下灯亮度）'}`);
     accessory.configureController(this.adaptiveController);
     lower.getCharacteristic(C.CharacteristicValueActiveTransitionCount).on('change',change=>{
       this.adaptiveEpoch++;
-      this.log.info('Apple自适应照明：'+(change.newValue ? '已启用（依据下灯亮度，控制整灯色温）' : '已停用'));
+      this.log.info('Apple自适应照明：'+(change.newValue ? '已启用（控制整灯色温）' : '已停用'));
       if(!change.newValue && this.online) this.enqueue('clear_adaptive_temperature').catch(e=>this.log.warn(e.message));
     });
     if (!exists) this.api.registerPlatformAccessories(PLUGIN,PLATFORM,[accessory]);
     else this.api.updatePlatformAccessories([accessory]);
     if (!masterExists) this.api.registerPlatformAccessories(PLUGIN,PLATFORM,[masterAccessory]);
     if (!autoExists) this.api.registerPlatformAccessories(PLUGIN,PLATFORM,[autoAccessory]);
-    this.log.info('版本 1.1.0；独立台灯总开关控制两路。自动亮度：两路全开恢复、单路关闭暂停、手调退出。共用色温与Apple自适应照明入口在下灯。');
+    this.log.info('版本 1.2.0；独立台灯总开关控制两路。自动亮度：两路全开恢复、单路关闭暂停、手调退出。共用色温与Apple自适应照明入口在下灯。');
   }
   disableAdaptive(reason) {
     if(this.adaptiveController?.isAdaptiveLightingActive()) {
@@ -133,7 +135,7 @@ class LaifenPlatform {
     try {
       await this.enqueue('temperature',kelvin,{adaptive});
       if(adaptive && this.adaptiveController.isAdaptiveLightingActive())
-        this.log.info(`自适应色温目标 ${kelvin}K；下灯亮度 ${this.state?.lower}%；${this.state?.power?'已应用':'关灯缓存，不开灯'}`);
+        this.log.info(`自适应色温目标 ${kelvin}K；下灯实际亮度 ${this.state?.lower}%；计算参考 ${this.adaptiveMode==='independent'?this.adaptiveReferenceBrightness:this.state?.lower}%；${this.state?.power?'已应用':'关灯缓存，不开灯'}`);
     } catch(e) { this.log.warn('色温控制失败：'+e.message); throw this.hapError(); }
   }
   mireds(state) { return Math.max(176,Math.min(344,Math.round(1000000/(state.target_temperature ?? state.temperature)))); }
