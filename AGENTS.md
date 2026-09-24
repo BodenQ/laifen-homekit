@@ -9,7 +9,7 @@ Local BLE → Homebridge → Apple Home/Siri for the observed Laifen **LFFL01-P*
 - `tools/lamp_protocol.py`: frame encoding/decoding and known status layout.
 - `tools/lamp_session.py`: BLE connection, notification routing, acknowledgements.
 - `tools/lamp_worker.py`: serialized stateful controller; JSON lines over stdin/stdout to the plugin.
-- `homekit/homebridge-laifen-local/index.js`: Homebridge platform, HomeKit services, Apple adaptive lighting.
+- `homekit/homebridge-laifen-local/index.js`: Homebridge platform and HomeKit services; `adaptive-lighting.js`: optional fixed-reference projection of Apple adaptive lighting.
 - `docs/protocol.md`: observed commands; `docs/compatibility.md`: hardware evidence/limits; `docs/existing-homebridge.md`: integration; `docs/usage.md`: maintenance.
 
 ## Behavior to preserve
@@ -28,6 +28,23 @@ Local BLE → Homebridge → Apple Home/Siri for the observed Laifen **LFFL01-P*
 - One BLE owner per lamp. Do not stop a user's bridge or send physical-control commands merely to run offline tests. Request observation when real-hardware testing is authorized and needed.
 - Runtime is separate from source: macOS `~/Library/Application Support/LaifenHomeKitBridge`, Linux `~/.local/share/laifen-homekit`. Preserve pairing/storage/preferences. Never commit runtime data, real identifiers, PINs, raw captures or personal logs.
 - Existing mode installs a Python companion and plugin, backs up/merges config, preserves bridge identity/other accessories; never launches a second bridge. Restart through the existing manager.
+
+- `adaptiveLightingMode` defaults to `apple`. Optional `independent` projects each Apple curve endpoint at `adaptiveReferenceBrightness` (default 70, range 1–100, clamped to Apple's multiplier bounds). HAP still owns interpolation, durations, clock offset, timers, renewal, persistence, expiry, notifications and manual overrides. Never mutate stored curves or falsify the real Brightness characteristic. See `docs/adaptive-lighting.md`.
+
+## Adaptive lighting preference: ask the user
+
+During assisted setup, proactively explain this choice and ask the user before changing it (reuse a preference already given in the conversation):
+
+> Apple 原生会让低亮度偏暖。你希望保留这个联动，还是让色温只随 Apple 的时间曲线变化？解耦时，70% 参考较温和，100% 白天通常更白；都不会改变实际亮度，晚上仍会变暖。
+
+- Offer `apple` (default, real lower-channel brightness) or `independent` (fixed reference). If undecided/no answer, preserve the existing choice or default to `apple`; never silently enable independent mode. Do not add another terminal-wizard question for this feature.
+- For independent mode, ask for/reference the user's preferred value: 70 is the software fallback, 100 is available for a cooler daytime curve; do not assume every user wants the maintainer's choice. If they choose independent without specifying a value, explain the 70 fallback rather than pretending it was selected explicitly.
+- Edit only `adaptiveLightingMode` and `adaptiveReferenceBrightness` on the actual `LaifenLocal` platform object. Example: `"adaptiveLightingMode": "independent", "adaptiveReferenceBrightness": 100`. Reference must be a number 1–100; Apple schedule bounds still apply. Keep actual Brightness values truthful.
+- Standalone config: `<runtime>/homekit/storage/config.json`. Existing Homebridge: its actual config, not merely the generated `platform.json` fragment. Back up privately and preserve pairing, other platforms, identity, paths and device fields. Set the preference after setup/integration creates the active configuration; verify updates preserve it.
+- Restart using that installation's service manager; allow unloading to finish before reloading. A valid saved Apple schedule should resume without re-pairing. If inactive, guide the user to enable adaptive lighting on the lower light in Home; do not fabricate a schedule.
+- Verify mode/reference in startup logs, real brightness and lamp-reported temperature after an adaptive update (normally within a minute). Do not equate ACK with physical colour accuracy. Revert with mode `apple` and a restart. Explain this is a local optional policy, not an Apple-certified new mode.
+
+Implementation and compatibility details: `docs/adaptive-lighting.md`. Only projection of the brightness term changes; original curves, segment durations, transitions, clock offset, renewal, expiry and persistence must stay intact. Run the upstream differential tests after touching this adapter or upgrading HAP.
 
 ## First-use troubleshooting
 

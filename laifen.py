@@ -18,7 +18,7 @@ import subprocess
 import sys
 import time
 
-VERSION='1.1.0'
+VERSION='1.2.0'
 SOURCE=Path(__file__).resolve().parent
 LABEL='io.github.laifen-homekit'
 DEFAULT_RUNTIME=Path.home()/('Library/Application Support/LaifenHomeKitBridge'
